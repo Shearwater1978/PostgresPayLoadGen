@@ -122,7 +122,8 @@ def main():
             print('Endpoint is set but inaccessible. Termination work')
             raise SystemExit(1)
         else:
-          print('Endpoint URL not exists. Please set and try again')
+          print('Endpoint URL not exists. Please set it and try again. Termination work')
+          raise SystemExit(1)
   else:
     print('Set mode to "pull" model.')
   print(persons)

@@ -13,6 +13,6 @@ before_install:
 script:
   - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
   - docker build . -f Dockerfile -t testimage
-  - docker save -o testimage testimage
+  - docker save -o testimage ./testimage
   - ls -la
-  - ./dockle --exit-code 0 -f json testimage
+  - ./dockle --exit-code 0 -f json ./testimage

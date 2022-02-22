@@ -13,4 +13,5 @@ before_install:
 
 script:
   - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
+  - docker images
   - ./dockle --exit-code 0 testimage:latest

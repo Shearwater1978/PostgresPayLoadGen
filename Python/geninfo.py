@@ -102,15 +102,12 @@ def push_to_api(persons):
 
 def main():
   generic.add_provider(Man)
-  print('Before int')
   if os.getenv('PERSON_COUNT'):
     try:
       person_count = int(os.getenv('PERSON_COUNT'))
-      print('Try Person count is: {}'.format(person_count))
     except:
-      print('Env varibale PERSON_COUNT is set but value is not number. Used default value - 10')
+      print('PERSON_COUNT is set but value is not number. Used default value - 10')
       person_count = 10
-  print('After if Person count is: {}'.format(person_count))
   persons = gen_pers_arr(person_count)
   if os.getenv('BEHAVIOR_MODEL'):
     if os.getenv('BEHAVIOR_MODEL') == "push":

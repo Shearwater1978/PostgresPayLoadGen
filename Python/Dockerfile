@@ -1,13 +1,24 @@
-FROM python:3.8
+#FROM python:3.8
+FROM python:3.8.11-bullseye
 
 MAINTAINER Aleksandr uglykoyote@gmail.com
 
-ENV PERSON_COUNT = 10 \
-    BEHAVIOR_MODEL = push \
-    SEND_TO_API = false
+ENV PERSON_COUNT=10
+ENV BEHAVIOR_MODEL="push"
+ENV SEND_TO_API="false"
 
+ARG USERNAME=notroot
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+
+USER notroot
 WORKDIR /app
 ADD geninfo.py /app/
-ADD requirements.txt
+ADD requirements.txt /app/
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --no-warn-script-location
+
+ENTRYPOINT ["python","geninfo.py"]

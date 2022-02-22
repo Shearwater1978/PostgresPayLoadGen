@@ -1,11 +1,8 @@
 # PostgresPayLoadGen
 
-certifi==2019.11.28
-chardet==3.0.4
-idna==2.8
-mimesis==3.3.1
-requests==2.22.0
-urllib3==1.25.7
+
+[![Build Status](https://app.travis-ci.com/Uglykoyote/PostgresPayLoadGen.svg?branch=master)](https://app.travis-ci.com/Uglykoyote/PostgresPayLoadGen)
+
 
 ```bash
 cat posgtresql.ini

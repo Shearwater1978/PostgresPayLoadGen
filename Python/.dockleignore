@@ -1,0 +1,8 @@
+# for Enable Content trust for Docker
+CIS-DI-0005
+# for Add HEALTHCHECK instruction to the container image
+CIS-DI-0006
+# for Confirm safety of setuid/setgid files
+CIS-DI-0008
+# for Only put necessary files
+DKL-LI-0003

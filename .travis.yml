@@ -5,14 +5,13 @@ services:
 
 before_install:
   - cd Python
-  - docker build . -f Dockerfile -t testimage:latest
+  - export DOCKER_BUILDKIT=1 docker build . -f Dockerfile -t testimage:latest
   - docker save testimage:latest -o testimage.tar
-  - export VERSION=$(wget -q -O - https://api.github.com/repos/hadolint/hadolint/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+  - export -q VERSION=$(wget -q -O - https://api.github.com/repos/hadolint/hadolint/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
   - wget https://github.com/hadolint/hadolint/releases/download/v${VERSION}/hadolint-Linux-x86_64 && chmod +x hadolint-Linux-x86_64
-  - export VERSION=$(wget -q -O - https://api.github.com/repos/goodwithtech/dockle/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+  - export -q VERSION=$(wget -q -O - https://api.github.com/repos/goodwithtech/dockle/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
   - wget https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.tar.gz && tar zxf dockle_${VERSION}_Linux-64bit.tar.gz
 
 script:
   - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
-  - ls -lat
   - ./dockle --input testimage.tar

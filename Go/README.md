@@ -1,0 +1,4 @@
+Build binary:
+```
+go build
+```

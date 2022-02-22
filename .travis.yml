@@ -5,7 +5,8 @@ services:
 
 before_install:
   - cd Python
-  - export DOCKER_BUILDKIT=1 docker build . -f Dockerfile -t testimage:latest
+  - export DOCKER_BUILDKIT=1 
+  - docker build . -f Dockerfile -t testimage:latest
   - docker save testimage:latest -o testimage.tar
   - export -q VERSION=$(wget -q -O - https://api.github.com/repos/hadolint/hadolint/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
   - wget https://github.com/hadolint/hadolint/releases/download/v${VERSION}/hadolint-Linux-x86_64 && chmod +x hadolint-Linux-x86_64

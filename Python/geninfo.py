@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 from mimesis import Address
 from mimesis import Person

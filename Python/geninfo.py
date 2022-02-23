@@ -108,6 +108,9 @@ def main():
     except:
       print('PERSON_COUNT is set but value is not number. Used default value - 10')
       person_count = 10
+  else:
+      print('PERSON_COUNT not found as env varibale. Used default value - 10')
+      person_count = 10
   persons = gen_pers_arr(person_count)
   if os.getenv('BEHAVIOR_MODEL'):
     if os.getenv('BEHAVIOR_MODEL') == "push":
@@ -124,8 +127,6 @@ def main():
   else:
     print('Set mode to "pull" model.')
   print(persons)
-
-
 
 if __name__ == '__main__':
   main()

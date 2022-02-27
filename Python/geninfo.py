@@ -167,6 +167,7 @@ def main():
     CYCLIAL_MODE=os.getenv('CYCLIAL_MODE')
   else:
     CYCLIAL_MODE=False
+    
   if os.getenv('PERSON_COUNT'):
     try:
       person_count = int(os.getenv('PERSON_COUNT'))
@@ -177,7 +178,7 @@ def main():
       print('PERSON_COUNT not found as env varibale. Used default value - 10')
       person_count = 10
 
-  if CYCLIAL_MODE:
+  if CYCLIAL_MODE == "True":
     print('Enable cyclic mode')
     while True:  
       persons = gen_pers_arr(person_count)
@@ -186,7 +187,7 @@ def main():
   else:
     persons = gen_pers_arr(person_count)
     insert(persons)
-    print("Insert another %s record(-s)" %person_count)
+    print("Insert single pack of %s record(-s)" %person_count)
 
 
 if __name__ == '__main__':

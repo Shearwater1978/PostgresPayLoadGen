@@ -102,16 +102,7 @@ def push_to_api(persons):
 
 def main():
   generic.add_provider(Man)
-  if os.getenv('PERSON_COUNT'):
-    try:
-      person_count = int(os.getenv('PERSON_COUNT'))
-    except:
-      print('PERSON_COUNT is set but value is not number. Used default value - 10')
-      person_count = 10
-  else:
-      print('PERSON_COUNT not found as env varibale. Used default value - 10')
-      person_count = 10
-  persons = gen_pers_arr(person_count)
+
   if os.getenv('BEHAVIOR_MODEL'):
     if os.getenv('BEHAVIOR_MODEL') == "push":
       if os.getenv('SEND_TO_API') == "true":
@@ -126,6 +117,31 @@ def main():
           raise SystemExit(1)
   else:
     print('Set mode to "pull" model.')
+
+  if os.getenv('PERSON_COUNT'):
+    try:
+      person_count = int(os.getenv('PERSON_COUNT'))
+    except:
+      print('PERSON_COUNT is set but value is not number. Used default value - 10')
+      person_count = 10
+  else:
+      print('PERSON_COUNT not found as env varibale. Used default value - 10')
+      person_count = 10
+  persons = gen_pers_arr(person_count)
+  # if os.getenv('BEHAVIOR_MODEL'):
+  #   if os.getenv('BEHAVIOR_MODEL') == "push":
+  #     if os.getenv('SEND_TO_API') == "true":
+  #       if os.getenv('API_ENDPOINT'):
+  #         if isOpen("localhost",18080):
+  #           push_to_api(persons)
+  #         else:
+  #           print('Endpoint is set but inaccessible. Termination work')
+  #           raise SystemExit(1)
+  #       else:
+  #         print('Endpoint URL not exists. Please set it and try again. Termination work')
+  #         raise SystemExit(1)
+  # else:
+  #   print('Set mode to "pull" model.')
   print(persons)
 
 if __name__ == '__main__':

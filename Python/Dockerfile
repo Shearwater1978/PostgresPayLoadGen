@@ -28,8 +28,8 @@ WORKDIR /app
 COPY geninfo.py /app/
 COPY check_conn.py /app/
 COPY requirements.txt /app/
+COPY docker-entrypoint.sh /app/
 
 RUN pip install -r requirements.txt --no-warn-script-location
 
-ENTRYPOINT ["python"]
-CMD ["check_conn.py"]
+ENTRYPOINT ["/bin/bash", "docker-entrypoint.sh"]

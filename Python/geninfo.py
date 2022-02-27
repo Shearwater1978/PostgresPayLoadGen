@@ -1,5 +1,3 @@
-
-
 from mimesis import Address
 from mimesis import Person
 from mimesis.enums import Gender
@@ -102,7 +100,6 @@ def push_to_api(persons):
 
 def main():
   generic.add_provider(Man)
-
   if os.getenv('BEHAVIOR_MODEL'):
     if os.getenv('BEHAVIOR_MODEL') == "push":
       if os.getenv('SEND_TO_API') == "true":
@@ -117,7 +114,15 @@ def main():
           raise SystemExit(1)
   else:
     print('Set mode to "pull" model.')
-
+  if os.getenv('RANDOM_FACTOR'):
+    RANDOM_FACTOR=os.getenv('RANDOM_FACTOR')
+  else:
+    RANDOM_FACTOR=1
+  # Check for cyclial mode
+  if os.getenv('CYCLIAL_MODE'):
+    CYCLIAL_MODE=True
+  else:
+    CYCLIAL_MODE=False
   if os.getenv('PERSON_COUNT'):
     try:
       person_count = int(os.getenv('PERSON_COUNT'))
@@ -127,22 +132,15 @@ def main():
   else:
       print('PERSON_COUNT not found as env varibale. Used default value - 10')
       person_count = 10
-  persons = gen_pers_arr(person_count)
-  # if os.getenv('BEHAVIOR_MODEL'):
-  #   if os.getenv('BEHAVIOR_MODEL') == "push":
-  #     if os.getenv('SEND_TO_API') == "true":
-  #       if os.getenv('API_ENDPOINT'):
-  #         if isOpen("localhost",18080):
-  #           push_to_api(persons)
-  #         else:
-  #           print('Endpoint is set but inaccessible. Termination work')
-  #           raise SystemExit(1)
-  #       else:
-  #         print('Endpoint URL not exists. Please set it and try again. Termination work')
-  #         raise SystemExit(1)
-  # else:
-  #   print('Set mode to "pull" model.')
-  print(persons)
+
+  if CYCLIAL_MODE:
+    while True:
+      persons = gen_pers_arr(person_count)
+      print(persons)
+  else:
+    persons = gen_pers_arr(person_count)
+    print(persons)
+
 
 if __name__ == '__main__':
   main()

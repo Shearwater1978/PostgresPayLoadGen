@@ -11,6 +11,9 @@ import random
 import threading
 import os
 import psycopg2
+import gc
+import resource
+import sys
 
 
 generic = Generic('ru')
@@ -37,6 +40,21 @@ class Man(BaseProvider):
       passport = RussiaSpecProvider().passport_series() + ' ' + str(RussiaSpecProvider().passport_number())
       json_out = json.dumps({'fio': full_name, 'phone': phone_number, 'age': age, 'city': city, 'address': address, 'inn': inn}, ensure_ascii=False)
       return(json_out)
+
+
+def memory_limit():
+    soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+    resource.setrlimit(resource.RLIMIT_AS, (get_memory() * 1024 / 2, hard))
+
+
+def get_memory():
+    with open('/proc/meminfo', 'r') as mem:
+        free_memory = 0
+        for i in mem:
+            sline = i.split()
+            if str(sline[0]) in ('MemFree:', 'Buffers:', 'Cached:'):
+                free_memory += int(sline[1])
+    return free_memory
 
 
 def get_creds():
@@ -80,6 +98,7 @@ def insert(persons):
       i += 1
     cursor.close()
     conn.close()
+    gc.collect()
 
 
 def isOpen(ip,port):
@@ -191,4 +210,5 @@ def main():
 
 
 if __name__ == '__main__':
+  memory_limit()
   main()

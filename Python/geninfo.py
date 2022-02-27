@@ -10,6 +10,7 @@ import socket
 import random
 import threading
 import os
+import psycopg2
 
 
 generic = Generic('ru')
@@ -36,6 +37,48 @@ class Man(BaseProvider):
       passport = RussiaSpecProvider().passport_series() + ' ' + str(RussiaSpecProvider().passport_number())
       json_out = json.dumps({'fio': full_name, 'phone': phone_number, 'age': age, 'city': city, 'address': address, 'inn': inn}, ensure_ascii=False)
       return(json_out)
+
+
+def get_creds():
+    if os.getenv('DB_USER_NAME'):
+        if os.getenv('DB_USER_PASS'):
+            if os.getenv('DB_USER_DB'):
+                if os.getenv('DB_USER_PG_HOST'):
+                    if os.getenv('DB_USER_PG_PORT'):
+                        dbport=os.getenv('DB_USER_PG_PORT')
+                    else:
+                        dbport="5432"
+                    dbhost=os.getenv('DB_USER_PG_HOST')
+                dbname=os.getenv('DB_USER_DB')
+            dbpass=os.getenv('DB_USER_PASS')            
+        dbuser = os.getenv('DB_USER_NAME')
+    else:
+        print('Some env varibale is not set or undefined. Script aborted')
+        raise SystemExit(1)
+    return(dbname,dbuser,dbpass,dbhost,dbport)
+
+
+def insert(persons):
+    dbname,dbuser,dbpass,dbhost,dbport= get_creds()
+    # Connect to your postgres DB
+    conn = psycopg2.connect(
+        host=dbhost,
+        database=dbname,
+        user=dbuser,
+        password=dbpass,
+        port=dbport
+    )
+    cursor = conn.cursor()
+    i = 0
+    persons_item_count=len(persons)
+    while i < persons_item_count:
+    # Open a cursor to perform database operations
+      person = json.loads(persons[i])
+      cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
+      conn.commit()
+      i += 1
+    cursor.close()
+    conn.close()
 
 
 def isOpen(ip,port):
@@ -136,10 +179,10 @@ def main():
   if CYCLIAL_MODE:
     while True:
       persons = gen_pers_arr(person_count)
-      print(persons)
+      insert(persons)
   else:
     persons = gen_pers_arr(person_count)
-    print(persons)
+    insert(persons)
 
 
 if __name__ == '__main__':

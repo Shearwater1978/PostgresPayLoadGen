@@ -164,7 +164,7 @@ def main():
     RANDOM_FACTOR=1
   # Check for cyclial mode
   if os.getenv('CYCLIAL_MODE'):
-    CYCLIAL_MODE=True
+    CYCLIAL_MODE=os.getenv('CYCLIAL_MODE')
   else:
     CYCLIAL_MODE=False
   if os.getenv('PERSON_COUNT'):
@@ -178,12 +178,15 @@ def main():
       person_count = 10
 
   if CYCLIAL_MODE:
-    while True:
+    print('Enable cyclic mode')
+    while True:  
       persons = gen_pers_arr(person_count)
       insert(persons)
+      print("Insert another %s record(-s)" %person_count)
   else:
     persons = gen_pers_arr(person_count)
     insert(persons)
+    print("Insert another %s record(-s)" %person_count)
 
 
 if __name__ == '__main__':

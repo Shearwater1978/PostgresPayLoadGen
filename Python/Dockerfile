@@ -28,7 +28,8 @@ COPY geninfo.py /app/
 COPY check_conn.py /app/
 COPY requirements.txt /app/
 
-RUN pip install -r requirements.txt --no-warn-script-location
+RUN pip install -r requirements.txt --no-warn-script-location \
+    && rm -rf /var/lib/apt/lists
 
 ENTRYPOINT ["python"]
 CMD ["check_conn.py"]

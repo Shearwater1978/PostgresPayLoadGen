@@ -68,6 +68,7 @@ def insert(persons):
         password=dbpass,
         port=dbport
     )
+    conn.autocommit = True
     cursor = conn.cursor()
     i = 0
     persons_item_count=len(persons)
@@ -75,7 +76,7 @@ def insert(persons):
     # Open a cursor to perform database operations
       person = json.loads(persons[i])
       cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
-      conn.commit()
+      # conn.commit()
       i += 1
     cursor.close()
     conn.close()

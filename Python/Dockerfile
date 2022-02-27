@@ -20,7 +20,8 @@ ARG USER_GID=$USER_UID
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
     && apt update \
-    && apt install net-tools
+    && apt install net-tools \
+    && rm -rf /var/lib/apt/lists
 
 USER notroot
 WORKDIR /app
@@ -28,8 +29,7 @@ COPY geninfo.py /app/
 COPY check_conn.py /app/
 COPY requirements.txt /app/
 
-RUN pip install -r requirements.txt --no-warn-script-location \
-    && rm -rf /var/lib/apt/lists
+RUN pip install -r requirements.txt --no-warn-script-location
 
 ENTRYPOINT ["python"]
 CMD ["check_conn.py"]

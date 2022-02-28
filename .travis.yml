@@ -35,6 +35,7 @@ jobs:
     - stage: Pytest
       name: Flake8
       script:
+        - ls -lat
         - pip install flake8
         - flake8 --config .flake8 aux_scripts/
 

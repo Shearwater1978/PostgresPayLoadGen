@@ -39,18 +39,14 @@ jobs:
         - pip install flake8
         - flake8 --config ../.flake8 aux_scripts/
 
-    - stage: DockerBuildStore
-      name: DockerBuildStore
-      script:
-        - docker build . -f Dockerfile -t testimage:latest
-        - docker save testimage:latest -o testimage.tar
-
-    - stage: DockerValidate
+    - stage: Docker
       name: Hadolint
       script:
         - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
     
-    - stage: DockerValidate
+    - stage: Docker
       name: Docle
       scrpit:
+        - docker build . -f Dockerfile -t testimage:latest
+        - docker save testimage:latest -o testimage.tar
         - ./dockle --input testimage.tar

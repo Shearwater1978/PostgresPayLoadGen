@@ -12,12 +12,14 @@ Added python script to check connectivity to PostgresSQL db
 If env variables are not set - the script abnormally stops.
 
 Palyload script generate fake Person records with next fields:
-fio - First name + Surename + Last name
-phone - in the Russian format with code +7
-age - Age generated between 18 and 20 year (can be changed directly in python script)
-city - City in Russia
-addr - Address of leaving fake person
-inn - Russian tax number
+| Field | Value |
+|---------------|
+| fio | First name + Surename + Last name |
+| phone | in the Russian format with code +7 |
+| age | Age generated between 18 and 20 year (can be changed directly in python script) |
+| city | City in Russia |
+| addr | Address of leaving fake person |
+| inn | Russian tax number |
 
 
 DB Person

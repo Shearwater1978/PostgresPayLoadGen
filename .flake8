@@ -1,4 +1,5 @@
-ignore:
+[flake8]
+ignore=
     E111,
     E722,
     E501,

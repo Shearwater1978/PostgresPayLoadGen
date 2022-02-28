@@ -26,10 +26,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 USER notroot
 WORKDIR /app
-COPY geninfo.py /app/
-COPY check_conn.py /app/
-COPY requirements.txt /app/
-COPY docker-entrypoint.sh /app/
+COPY aux_scripts/ /app/
 
 RUN pip install -r requirements.txt --no-warn-script-location
 

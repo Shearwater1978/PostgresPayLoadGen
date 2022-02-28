@@ -91,7 +91,7 @@ def insert(persons):
     i = 0
     persons_item_count = len(persons)
     while i < persons_item_count:
-    # Open a cursor to perform database operations
+      # Open a cursor to perform database operations
       person = json.loads(persons[i])
       cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
       # conn.commit()
@@ -114,7 +114,7 @@ def isOpen(ip, port):
 def new_pers(gender):
   person = Person('ru')
   pers = {
-    'fio': person.full_name(gender=gender, reverse = True)+' '+RussiaSpecProvider().patronymic(gender=gender),
+    'fio': person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender),
     'phone': person.telephone(),
     'age': person.age(minimum=18, maximum=20),
     'city': Address('ru').city(),
@@ -138,7 +138,7 @@ def checkOpenPort(ip, port):
 
 def gen_pers_arr(i):
   out_array = []
-  if random.randint(1, 4)%2 == 0:
+  if random.randint(1, 4) % 2 == 0:
     gender = Gender.FEMALE
   else:
     gender = Gender.MALE
@@ -163,9 +163,9 @@ def push_to_api(persons):
 
 def main():
   if os.getevd('SEND_TO_CONSOLE'):
-    SEND_TO_CONSOLE=os.getevd('SEND_TO_CONSOLE')
+    SEND_TO_CONSOLE = os.getevd('SEND_TO_CONSOLE')
   else:
-    SEND_TO_CONSOLE=False
+    SEND_TO_CONSOLE = False
 
   generic.add_provider(Man)
 
@@ -173,8 +173,9 @@ def main():
     if os.getenv('BEHAVIOR_MODEL') == "push":
       if os.getenv('SEND_TO_API') == "true":
         if os.getenv('API_ENDPOINT'):
-          if isOpen("localhost",18080):
-            push_to_api(persons)
+          if isOpen("localhost", 18080):
+            # push_to_api(persons)
+            pass
           else:
             print('Endpoint is set but inaccessible. Termination work')
             raise SystemExit(1)
@@ -194,7 +195,7 @@ def main():
     CYCLIAL_MODE = os.getenv('CYCLIAL_MODE')
   else:
     CYCLIAL_MODE = False
-    
+
   if os.getenv('PERSON_COUNT'):
     try:
       person_count = int(os.getenv('PERSON_COUNT'))

@@ -35,9 +35,9 @@ class Man(BaseProvider):
       age = person.age(minimum=18, maximum=20)
       city = Address('ru').city()
       address = Address('ru').address()
-      full_name = person.full_name(gender=gender, reverse = True) + ' ' +  RussiaSpecProvider().patronymic(gender=gender)
+      full_name = person.full_name(gender=gender, reverse = True)+' '+RussiaSpecProvider().patronymic(gender=gender)
       inn = RussiaSpecProvider().inn()
-      passport = RussiaSpecProvider().passport_series() + ' ' + str(RussiaSpecProvider().passport_number())
+      passport = RussiaSpecProvider().passport_series()+' '+str(RussiaSpecProvider().passport_number())
       json_out = json.dumps({'fio': full_name, 'phone': phone_number, 'age': age, 'city': city, 'address': address, 'inn': inn}, ensure_ascii=False)
       return(json_out)
 
@@ -101,7 +101,7 @@ def insert(persons):
     gc.collect()
 
 
-def isOpen(ip,port):
+def isOpen(ip, port):
    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
    try:
       s.connect((ip, int(port)))
@@ -114,7 +114,7 @@ def isOpen(ip,port):
 def new_pers(gender):
   person = Person('ru')
   pers = {
-    'fio': person.full_name(gender=gender, reverse = True) + ' ' +  RussiaSpecProvider().patronymic(gender=gender),
+    'fio': person.full_name(gender=gender, reverse = True)+' '+RussiaSpecProvider().patronymic(gender=gender),
     'phone': person.telephone(),
     'age': person.age(minimum=18, maximum=20),
     'city': Address('ru').city(),

@@ -90,12 +90,14 @@ def insert(persons):
     cursor = conn.cursor()
     i = 0
     persons_item_count = len(persons)
-    while i < persons_item_count:
+    # while i < persons_item_count:
+    for person in load_json(persons):
       # Open a cursor to perform database operations
-      person = json.loads(persons[i])
+      # person = json.loads(persons[i])
       cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
       # conn.commit()
       i += 1
+    persons = []
     cursor.close()
     conn.close()
     gc.collect()
@@ -162,8 +164,8 @@ def push_to_api(persons):
 
 
 def main():
-  if os.getevd('SEND_TO_CONSOLE'):
-    SEND_TO_CONSOLE = os.getevd('SEND_TO_CONSOLE')
+  if os.getenv('SEND_TO_CONSOLE'):
+    SEND_TO_CONSOLE = os.getenv('SEND_TO_CONSOLE')
   else:
     SEND_TO_CONSOLE = False
 
@@ -201,10 +203,10 @@ def main():
       person_count = int(os.getenv('PERSON_COUNT'))
     except:
       print('PERSON_COUNT is set but value is not number. Used default value - 10')
-      person_count = 10
+      person_count = 1
   else:
       print('PERSON_COUNT not found as env varibale. Used default value - 10')
-      person_count = 10
+      person_count = 1
 
   if CYCLIAL_MODE == "True":
     print('Enable cyclic mode')

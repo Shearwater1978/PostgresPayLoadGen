@@ -1,5 +1,8 @@
 language: bash
 
+python:
+  - "3.8"
+
 services:
   - docker
 
@@ -13,5 +16,32 @@ before_install:
 script:
   - docker build . -f Dockerfile -t testimage:latest
   - docker save testimage:latest -o testimage.tar
-  - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
-  - ./dockle --input testimage.tar
+  # - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
+  # - ./dockle --input testimage.tar
+
+jobs:
+  include:
+    - stage: pytest
+      name: Black
+      script:
+        - pip install black==21.12b0
+
+    - stage: pytest
+      name: Isort
+      script:
+        - pip install isort
+
+    - stage: pytest
+      name: Flake8
+      script:
+        - pip install flake8
+
+    - stage: Docker
+      name: Hadolint
+      script:
+        - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
+    
+    - stage: Docker
+      name: Docle
+      scrpit:
+        - ./dockle --input testimage.tar

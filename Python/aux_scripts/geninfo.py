@@ -208,18 +208,18 @@ def main():
 
   if CYCLIAL_MODE == "True":
     print('Enable cyclic mode')
-    while True:  
+    while True:
       persons = gen_pers_arr(person_count)
       if SEND_TO_CONSOLE == "False":
         insert(persons)
-        print("Insert another %s record(-s)" %person_count)
+        print("Insert another %s record(-s)" % person_count)
       else:
         print(persons)
   else:
     persons = gen_pers_arr(person_count)
     if SEND_TO_CONSOLE == "False":
       insert(persons)
-      print("Insert single pack of %s record(-s)" %person_count)
+      print("Insert single pack of %s record(-s)" % person_count)
     else:
       print(persons)
 

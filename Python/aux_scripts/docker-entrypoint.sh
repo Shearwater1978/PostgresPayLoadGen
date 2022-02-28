@@ -2,15 +2,12 @@
 
 set -e
 
-echo "Initial check DB connection started..."
+if [ "$SEND_TO_CONSOLE" == 'False' ]; then
+   echo "Initial check DB connection started..."
+   RES=$(python check_conn.py)
+fi
 
-RES=$(python check_conn.py)
-
-if [ "$RES" !=  'Connection to PG is active.' ]; then
-   echo "DB server is not available"
-   echo "Termination..."
-   exit 1
-else
+if [ "$SEND_TO_CONSOLE" == 'True' ]; then
    echo "Check env variables"
    echo "BEHAVIOR_MODEL: $BEHAVIOR_MODEL"
    echo "SEND_TO_API: $SEND_TO_API"
@@ -18,6 +15,11 @@ else
    echo "RANDOM_FACTOR: $RANDOM_FACTOR"
    echo "CYCLIAL_MODE: $CYCLIAL_MODE"
    echo "PERSON_COUNT: $PERSON_COUNT"
-
    exec python geninfo.py
+else
+   if [ "$RES" !=  'Connection to PG is active.' ]; then
+      echo "DB server is not available"
+      echo "Termination..."
+      exit 1
+   fi
 fi

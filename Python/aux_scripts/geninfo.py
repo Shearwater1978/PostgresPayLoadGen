@@ -89,7 +89,7 @@ def insert(persons):
     conn.autocommit = True
     cursor = conn.cursor()
     i = 0
-    persons_item_count=len(persons)
+    persons_item_count = len(persons)
     while i < persons_item_count:
     # Open a cursor to perform database operations
       person = json.loads(persons[i])
@@ -185,15 +185,15 @@ def main():
     print('Set mode to "pull" model.')
 
   if os.getenv('RANDOM_FACTOR'):
-    RANDOM_FACTOR=os.getenv('RANDOM_FACTOR')
+    RANDOM_FACTOR = os.getenv('RANDOM_FACTOR')
   else:
-    RANDOM_FACTOR=1
+    RANDOM_FACTOR = 1
 
   # Check for cyclial mode
   if os.getenv('CYCLIAL_MODE'):
-    CYCLIAL_MODE=os.getenv('CYCLIAL_MODE')
+    CYCLIAL_MODE = os.getenv('CYCLIAL_MODE')
   else:
-    CYCLIAL_MODE=False
+    CYCLIAL_MODE = False
     
   if os.getenv('PERSON_COUNT'):
     try:

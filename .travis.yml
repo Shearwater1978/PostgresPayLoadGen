@@ -13,35 +13,44 @@ before_install:
   - export VERSION=$(wget -q -O - https://api.github.com/repos/goodwithtech/dockle/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
   - wget -q https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.tar.gz && tar zxf dockle_${VERSION}_Linux-64bit.tar.gz
 
-script:
-  - docker build . -f Dockerfile -t testimage:latest
-  - docker save testimage:latest -o testimage.tar
+# script:
+#   - docker build . -f Dockerfile -t testimage:latest
+#   - docker save testimage:latest -o testimage.tar
   # - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
   # - ./dockle --input testimage.tar
 
 jobs:
   include:
-    - stage: pytest
+    - stage: Pytest
       name: Black
       script:
-        - pip install black==21.12b0
+        - pip install black==22.1.0
+        - black aux_scripts/
 
-    - stage: pytest
+    - stage: Pytest
       name: Isort
       script:
         - pip install isort
+        - isort aux_scripts/
 
-    - stage: pytest
+    - stage: Pytest
       name: Flake8
       script:
         - pip install flake8
+        - flake8 aux_scripts/
 
-    - stage: Docker
+    - stage: DockerBuildStore
+      name: DockerBuildStore
+      script:
+        - docker build . -f Dockerfile -t testimage:latest
+        - docker save testimage:latest -o testimage.tar
+
+    - stage: DockerValidate
       name: Hadolint
       script:
         - ./hadolint-Linux-x86_64 -f json --no-fail Dockerfile > hadolint.json
     
-    - stage: Docker
+    - stage: DockerValidate
       name: Docle
       scrpit:
         - ./dockle --input testimage.tar

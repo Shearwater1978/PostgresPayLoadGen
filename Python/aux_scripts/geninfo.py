@@ -30,7 +30,7 @@ class Man(BaseProvider):
 
     @staticmethod
     def personel(gender):
-      person = Person('ru')   
+      person = Person('ru')
       phone_number = person.telephone()
       age = person.age(minimum=18, maximum=20)
       city = Address('ru').city()
@@ -68,7 +68,7 @@ def get_creds():
                         dbport = "5432"
                     dbhost = os.getenv('DB_USER_PG_HOST')
                 dbname = os.getenv('DB_USER_DB')
-            dbpass = os.getenv('DB_USER_PASS')            
+            dbpass = os.getenv('DB_USER_PASS')
         dbuser = os.getenv('DB_USER_NAME')
     else:
         print('Some env varibale is not set or undefined. Script aborted')

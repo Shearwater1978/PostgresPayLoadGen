@@ -35,9 +35,9 @@ class Man(BaseProvider):
       age = person.age(minimum=18, maximum=20)
       city = Address('ru').city()
       address = Address('ru').address()
-      full_name = person.full_name(gender=gender, reverse = True)+' '+RussiaSpecProvider().patronymic(gender=gender)
+      full_name = person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender)
       inn = RussiaSpecProvider().inn()
-      passport = RussiaSpecProvider().passport_series()+' '+str(RussiaSpecProvider().passport_number())
+      passport = RussiaSpecProvider().passport_series() + ' ' + str(RussiaSpecProvider().passport_number())
       json_out = json.dumps({'fio': full_name, 'phone': phone_number, 'age': age, 'city': city, 'address': address, 'inn': inn}, ensure_ascii=False)
       return(json_out)
 
@@ -129,7 +129,7 @@ def call_personel(gender):
 
 
 def checkOpenPort(ip, port):
-  if isOpen(ip,port):
+  if isOpen(ip, port):
     print('Connection opened')
   else:
     print("Port is closed. Script aborted")
@@ -138,13 +138,13 @@ def checkOpenPort(ip, port):
 
 def gen_pers_arr(i):
   out_array = []
-  if random.randint(1,4)%2 == 0:
+  if random.randint(1, 4)%2 == 0:
     gender = Gender.FEMALE
   else:
     gender = Gender.MALE
-  for item in range(0,i):
+  for item in range(0, i):
    out_array.append(new_pers(gender))
-  return(out_array)   
+  return(out_array)
 
 
 def send_to_api(person):

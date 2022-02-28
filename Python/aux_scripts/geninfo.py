@@ -73,7 +73,7 @@ def get_creds():
     else:
         print('Some env varibale is not set or undefined. Script aborted')
         raise SystemExit(1)
-    return(dbname,dbuser,dbpass,dbhost,dbport)
+    return(dbname, dbuser, dbpass, dbhost, dbport)
 
 
 def insert(persons):

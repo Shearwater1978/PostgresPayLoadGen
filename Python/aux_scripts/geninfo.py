@@ -63,12 +63,12 @@ def get_creds():
             if os.getenv('DB_USER_DB'):
                 if os.getenv('DB_USER_PG_HOST'):
                     if os.getenv('DB_USER_PG_PORT'):
-                        dbport=os.getenv('DB_USER_PG_PORT')
+                        dbport = os.getenv('DB_USER_PG_PORT')
                     else:
-                        dbport="5432"
-                    dbhost=os.getenv('DB_USER_PG_HOST')
-                dbname=os.getenv('DB_USER_DB')
-            dbpass=os.getenv('DB_USER_PASS')            
+                        dbport = "5432"
+                    dbhost = os.getenv('DB_USER_PG_HOST')
+                dbname = os.getenv('DB_USER_DB')
+            dbpass = os.getenv('DB_USER_PASS')            
         dbuser = os.getenv('DB_USER_NAME')
     else:
         print('Some env varibale is not set or undefined. Script aborted')
@@ -77,7 +77,7 @@ def get_creds():
 
 
 def insert(persons):
-    dbname,dbuser,dbpass,dbhost,dbport= get_creds()
+    dbname, dbuser, dbpass, dbhost, dbport = get_creds()
     # Connect to your postgres DB
     conn = psycopg2.connect(
         host=dbhost,

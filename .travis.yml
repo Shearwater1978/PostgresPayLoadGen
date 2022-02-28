@@ -25,7 +25,7 @@ jobs:
       name: Black
       script:
         - pip install black
-        - black aux_scripts/
+        - python -m black aux_scripts/
 
     - stage: Pytest
       name: Isort

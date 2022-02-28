@@ -13,7 +13,7 @@ def get_creds():
                         dbport = "5432"
                     dbhost = os.getenv('DB_USER_PG_HOST')
                 dbname = os.getenv('DB_USER_DB')
-            dbpass = os.getenv('DB_USER_PASS')            
+            dbpass = os.getenv('DB_USER_PASS')
         dbuser = os.getenv('DB_USER_NAME')
     else:
         print('Some env varibale is not set or undefined. Script aborted')
@@ -44,8 +44,11 @@ def check_conn():
         print("Unable to established connection to PG. Script aborted")
         raise SystemExit(1)
 
+
 def main():
     check_conn()
 
+
 if __name__ == '__main__':
     main()
+    

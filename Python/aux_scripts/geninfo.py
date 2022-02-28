@@ -162,7 +162,13 @@ def push_to_api(persons):
 
 
 def main():
+  if os.getevd('SEND_TO_CONSOLE'):
+    SEND_TO_CONSOLE=os.getevd('SEND_TO_CONSOLE')
+  else:
+    SEND_TO_CONSOLE=False
+
   generic.add_provider(Man)
+
   if os.getenv('BEHAVIOR_MODEL'):
     if os.getenv('BEHAVIOR_MODEL') == "push":
       if os.getenv('SEND_TO_API') == "true":
@@ -177,10 +183,12 @@ def main():
           raise SystemExit(1)
   else:
     print('Set mode to "pull" model.')
+
   if os.getenv('RANDOM_FACTOR'):
     RANDOM_FACTOR=os.getenv('RANDOM_FACTOR')
   else:
     RANDOM_FACTOR=1
+
   # Check for cyclial mode
   if os.getenv('CYCLIAL_MODE'):
     CYCLIAL_MODE=os.getenv('CYCLIAL_MODE')
@@ -201,12 +209,18 @@ def main():
     print('Enable cyclic mode')
     while True:  
       persons = gen_pers_arr(person_count)
-      insert(persons)
-      print("Insert another %s record(-s)" %person_count)
+      if SEND_TO_CONSOLE == "False":
+        insert(persons)
+        print("Insert another %s record(-s)" %person_count)
+      else:
+        print(persons)
   else:
     persons = gen_pers_arr(person_count)
-    insert(persons)
-    print("Insert single pack of %s record(-s)" %person_count)
+    if SEND_TO_CONSOLE == "False":
+      insert(persons)
+      print("Insert single pack of %s record(-s)" %person_count)
+    else:
+      print(persons)
 
 
 if __name__ == '__main__':

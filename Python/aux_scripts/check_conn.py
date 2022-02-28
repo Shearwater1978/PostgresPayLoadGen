@@ -22,7 +22,7 @@ def get_creds():
 
 
 def check_conn():
-    dbname,dbuser,dbpass,dbhost,dbport= get_creds()
+    dbname, dbuser, dbpass, dbhost, dbport = get_creds()
     # Connect to your postgres DB
     conn = psycopg2.connect(
         host=dbhost,

@@ -28,18 +28,18 @@ class Man(BaseProvider):
       super(Man, self).__init__(**kwargs)
 
 
-    @staticmethod
-    def personel(gender):
-      person = Person('ru')
-      phone_number = person.telephone()
-      age = person.age(minimum=18, maximum=20)
-      city = Address('ru').city()
-      address = Address('ru').address()
-      full_name = person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender)
-      inn = RussiaSpecProvider().inn()
-      passport = RussiaSpecProvider().passport_series() + ' ' + str(RussiaSpecProvider().passport_number())
-      json_out = json.dumps({'fio': full_name, 'phone': phone_number, 'age': age, 'city': city, 'address': address, 'inn': inn}, ensure_ascii=False)
-      return(json_out)
+#     @staticmethod
+#     def personel(gender):
+#       person = Person('ru')
+#       phone_number = person.telephone()
+#       age = person.age(minimum=18, maximum=20)
+#       city = Address('ru').city()
+#       address = Address('ru').address()
+#       full_name = person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender)
+#       inn = RussiaSpecProvider().inn()
+#       passport = RussiaSpecProvider().passport_series() + ' ' + str(RussiaSpecProvider().passport_number())
+#       json_out = json.dumps({'fio': full_name, 'phone': phone_number, 'age': age, 'city': city, 'address': address, 'inn': inn}, ensure_ascii=False)
+#       return(json_out)
 
 
 def memory_limit():
@@ -86,21 +86,31 @@ def insert(persons):
         password=dbpass,
         port=dbport
     )
-    conn.autocommit = True
+    # conn.autocommit = True
+    # print("Cursor opening. Sent to stdout", file = sys.stdout)
     cursor = conn.cursor()
-    # i = 0
-    # persons_item_count = len(persons)
-    # while i < persons_item_count:
-    for person in load_json(persons):
+    i = 0
+    persons_item_count = len(persons)
+    # print("Get pesron count in array. Sent to stdout", file = sys.stdout)
+    while i < persons_item_count:
+    # for person in load_json(persons):
       # Open a cursor to perform database operations
-      # person = json.loads(persons[i])
+      # print("Read %s item from array. Sent to stdout" % i, file = sys.stdout)
+      person = json.loads(persons[i])
       cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
       # conn.commit()
-      # i += 1
+      # print("Cursor executed. Sent to stdout", file = sys.stdout)
+      i += 1
     persons = {}
+    # print("Array is set to null. Sent to stdout", file = sys.stdout)
+    conn.commit()
+    # print("Made commit. Sent to stdout", file = sys.stdout)
     cursor.close()
+    # print("Cursor closed. Sent to stdout", file = sys.stdout)
     conn.close()
+    # print("Connection closed. Sent to stdout", file = sys.stdout)
     gc.collect()
+    # print("Garbage collector executed. Sent to stdout", file = sys.stdout)
 
 
 def isOpen(ip, port):
@@ -114,15 +124,64 @@ def isOpen(ip, port):
 
 
 def new_pers(gender):
-  person = Person('ru')
+  print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", file = sys.stdout)
+  print("Called new_pers", file = sys.stdout)
+  try:
+    person = Person('de')
+  except:
+    pass
+  # Try to handle error when generate fio
+  try:
+    fio = person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender)
+  except:
+    fio = 'Неуловимый Джон Малкович'
+  # Try to handle error when generate phone
+  try:
+    phone = person.telephone()
+  except:
+    phone = '+7-(920)-818-98-47'
+  # Try to handle error when generate age
+  try:
+    age = person.age(minimum=18, maximum=20)
+  except:
+    age = 99
+  # Try to handle error when generate City
+  try:
+    city = Address('de').city()
+  except:
+    city = 'Обломовск'
+  # Try to handle error when generate address
+  try:
+    address = Address('de').address()
+  except:
+    address = 'ул. Луиджи Никакущего 1037'
+  # Try to handle error when generate inn
+  try:
+    inn = RussiaSpecProvider().inn()
+  except:
+    inn = '432040743790'
+
   pers = {
-    'fio': person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender),
-    'phone': person.telephone(),
-    'age': person.age(minimum=18, maximum=20),
-    'city': Address('ru').city(),
-    'address': Address('ru').address(),
-    'inn': RussiaSpecProvider().inn()
-  }
+      'fio': fio,
+      'phone': phone,
+      'age': age,
+      'city': city,
+      'address': address,
+      'inn': inn
+    }
+
+  # try:
+  #   pers = {
+  #     'fio': person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender),
+  #     'phone': person.telephone(),
+  #     'age': person.age(minimum=18, maximum=20),
+  #     'city': Address('ru').city(),
+  #     'address': Address('ru').address(),
+  #     'inn': RussiaSpecProvider().inn()
+  #   }
+  # except:
+  #   pass
+  print("call new_pers. Generated record %s" % pers, file = sys.stdout)
   return(json.dumps(pers, ensure_ascii=False))
 
 
@@ -145,7 +204,13 @@ def gen_pers_arr(i):
   else:
     gender = Gender.MALE
   for item in range(0, i):
-   out_array.append(new_pers(gender))
+    print("call new_pers. Retrieve %s item. Sent to stdout" % item, file = sys.stdout)
+    new_person = new_pers(gender)
+    print("call gen_pers_arr. new_person is: %s" % new_person, file = sys.stdout)
+    try:
+      out_array.append(new_person)
+    except MemoryError as e:
+      print("call gen_pers_arr. Exception. Wrong data: %s" % new_person, file = sys.stdout)
   return(out_array)
 
 
@@ -214,7 +279,7 @@ def main():
       persons = gen_pers_arr(person_count)
       if SEND_TO_CONSOLE == "False":
         insert(persons)
-        print("Insert another %s record(-s)" % person_count)
+        print("Insert another %s record(-s). Sent to stdout" % person_count, file = sys.stdout)
       else:
         print(persons)
       persons = {}
@@ -224,7 +289,7 @@ def main():
     persons = gen_pers_arr(person_count)
     if SEND_TO_CONSOLE == "False":
       insert(persons)
-      print("Insert single pack of %s record(-s)" % person_count)
+      print("Insert single pack of %s record(-s). Sent to stdout" % person_count, file = sys.stdout)
     else:
       print(persons)
 

@@ -21,5 +21,11 @@ else
       echo "DB server is not available"
       echo "Termination..."
       exit 1
+   else
+      while :
+      do
+         echo "Run send payload in cyclial mode..."
+         python geninfo.py
+      done
    fi
 fi

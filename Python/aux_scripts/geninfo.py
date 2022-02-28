@@ -14,7 +14,7 @@ import psycopg2
 import gc
 import resource
 import sys
-
+import time
 
 generic = Generic('ru')
 
@@ -123,7 +123,7 @@ def new_pers(gender):
     'address': Address('ru').address(),
     'inn': RussiaSpecProvider().inn()
   }
-  return(json.dumps(pers))
+  return(json.dumps(pers, ensure_ascii=False))
 
 
 def call_personel(gender):
@@ -217,6 +217,9 @@ def main():
         print("Insert another %s record(-s)" % person_count)
       else:
         print(persons)
+      persons = {}
+      time.sleep(0.5)
+      gc.collect()
   else:
     persons = gen_pers_arr(person_count)
     if SEND_TO_CONSOLE == "False":

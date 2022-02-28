@@ -24,7 +24,7 @@ jobs:
     - stage: Pytest
       name: Black
       script:
-        - pip install black==22.1.0
+        - pip install black
         - black aux_scripts/
 
     - stage: Pytest

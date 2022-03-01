@@ -1,5 +1,6 @@
 
-drop table person;
+drop table if exists person;
+
 CREATE TABLE person (
     fio VARCHAR ( 50 ) NOT NULL,
     phone VARCHAR ( 18 ) NOT NULL,

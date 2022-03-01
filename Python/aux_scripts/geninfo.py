@@ -5,14 +5,14 @@ from mimesis.builtins import RussiaSpecProvider
 from mimesis import Generic
 from mimesis.providers.base import BaseProvider
 import json
-import requests
+# import requests
 import socket
 import random
-import threading
+# import threading
 import os
 import psycopg2
 import gc
-import resource
+# import resource
 import sys
 import time
 
@@ -40,21 +40,6 @@ class Man(BaseProvider):
 #       passport = RussiaSpecProvider().passport_series() + ' ' + str(RussiaSpecProvider().passport_number())
 #       json_out = json.dumps({'fio': full_name, 'phone': phone_number, 'age': age, 'city': city, 'address': address, 'inn': inn}, ensure_ascii=False)
 #       return(json_out)
-
-
-def memory_limit():
-    soft, hard = resource.getrlimit(resource.RLIMIT_AS)
-    resource.setrlimit(resource.RLIMIT_AS, (get_memory() * 1024 / 2, hard))
-
-
-def get_memory():
-    with open('/proc/meminfo', 'r') as mem:
-        free_memory = 0
-        for i in mem:
-            sline = i.split()
-            if str(sline[0]) in ('MemFree:', 'Buffers:', 'Cached:'):
-                free_memory += int(sline[1])
-    return free_memory
 
 
 def get_creds():
@@ -113,21 +98,11 @@ def insert(persons):
     # print("Garbage collector executed. Sent to stdout", file = sys.stdout)
 
 
-def isOpen(ip, port):
-   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   try:
-      s.connect((ip, int(port)))
-      s.shutdown(2)
-      return True
-   except:
-      return False
-
-
 def new_pers(gender):
   print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", file = sys.stdout)
   print("Called new_pers", file = sys.stdout)
   try:
-    person = Person('de')
+    person = Person(Locate.RU)
   except:
     pass
   # Try to handle error when generate fio
@@ -170,31 +145,12 @@ def new_pers(gender):
       'inn': inn
     }
 
-  # try:
-  #   pers = {
-  #     'fio': person.full_name(gender=gender, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=gender),
-  #     'phone': person.telephone(),
-  #     'age': person.age(minimum=18, maximum=20),
-  #     'city': Address('ru').city(),
-  #     'address': Address('ru').address(),
-  #     'inn': RussiaSpecProvider().inn()
-  #   }
-  # except:
-  #   pass
   print("call new_pers. Generated record %s" % pers, file = sys.stdout)
   return(json.dumps(pers, ensure_ascii=False))
 
 
 def call_personel(gender):
   return(generic.man_provider.personel(gender))
-
-
-def checkOpenPort(ip, port):
-  if isOpen(ip, port):
-    print('Connection opened')
-  else:
-    print("Port is closed. Script aborted")
-    raise SystemExit(0)
 
 
 def gen_pers_arr(i):
@@ -212,20 +168,6 @@ def gen_pers_arr(i):
     except MemoryError as e:
       print("call gen_pers_arr. Exception. Wrong data: %s" % new_person, file = sys.stdout)
   return(out_array)
-
-
-def send_to_api(person):
-  requests.post("http://localhost:18080/api/v1/records", data=person.encode('utf-8'))
-
-
-def push_to_api(persons):
-  threads = []
-  for person in persons:
-    threads.append(threading.Thread(send_to_api(person)))
-  for thread in threads:
-    thread.start()
-  for thread in threads:
-    thread.join()
 
 
 def main():
@@ -295,5 +237,4 @@ def main():
 
 
 if __name__ == '__main__':
-  memory_limit()
   main()

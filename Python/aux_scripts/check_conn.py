@@ -1,5 +1,6 @@
 import psycopg2
 import os
+import sys
 
 
 def get_creds():
@@ -16,7 +17,7 @@ def get_creds():
             dbpass = os.getenv('DB_USER_PASS')
         dbuser = os.getenv('DB_USER_NAME')
     else:
-        print('Some env varibale is not set or undefined. Script aborted')
+        print('Some env varibale is not set or undefined. Script aborted', file = sys.stdout)
         raise SystemExit(1)
     return(dbname, dbuser, dbpass, dbhost, dbport)
 
@@ -24,13 +25,17 @@ def get_creds():
 def check_conn():
     dbname, dbuser, dbpass, dbhost, dbport = get_creds()
     # Connect to your postgres DB
-    conn = psycopg2.connect(
-        host=dbhost,
-        database=dbname,
-        user=dbuser,
-        password=dbpass,
-        port=dbport
-    )
+    try:
+        conn = psycopg2.connect(
+            host=dbhost,
+            database=dbname,
+            user=dbuser,
+            password=dbpass,
+            port=dbport
+        )
+    except:
+        print('Unable to connect to db server. Exiting', file = sys.stdout)
+        raise SystemExit(1)
     # Open a cursor to perform database operations
     cur = conn.cursor()
     # Execute a query
@@ -39,9 +44,9 @@ def check_conn():
     # Retrieve query results
     records = cur.fetchall()
     if records:
-        print("Connection to PG is active.")
+        print("Connection to PG is active.", file = sys.stdout)
     else:
-        print("Unable to established connection to PG. Script aborted")
+        print("Unable to established connection to PG. Script aborted", file = sys.stdout)
         raise SystemExit(1)
 
 

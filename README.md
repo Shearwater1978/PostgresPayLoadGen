@@ -39,3 +39,8 @@ Run db PostgreSQL in docker container
 ```
 docker run --name postgres -e POSTGRES_PASSWORD=pgpass -e POSTGRES_USER=pguser -e POSTGRES_DB=pgdb -d -p5432:5432 -v `pwd`/SQL/init_db/:/docker-entrypoint-initdb.d/ postgres
 ```
+
+Get records from PostgreSQL
+```
+psql -U pguser -d person -h 0.0.0.0 < ./SQL/get_count_of_records.sql
+```

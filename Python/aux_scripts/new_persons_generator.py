@@ -3,9 +3,11 @@ from mimesis.locales import Locale
 from mimesis.schema import Field, Schema
 from mimesis.builtins import RussiaSpecProvider
 from mimesis import Address
+import os
+import sys
 
 
-def generate_bulk(count)
+def generate_bulk(count):
     _ = Field(locale=Locale.RU)
     schema = Schema(schema=lambda: {
         "uid": _("uuid"),
@@ -32,21 +34,39 @@ def read_env():
         CYCLIAL_MODE = False
     if os.getenv('PERSON_COUNT'):
         try:
-            person_count = int(os.getenv('PERSON_COUNT'))
+            PERSON_COUNT = int(os.getenv('PERSON_COUNT'))
         except:
-        print('PERSON_COUNT is set but value is not number. Used default value - 10')
-        person_count = 10
+            print('PERSON_COUNT is set but value is not number. Used default value - 10')
+            PERSON_COUNT = 10
     else:
         print('PERSON_COUNT not found as env varibale. Used default value - 10')
-        person_count = 10
+        PERSON_COUNT = 10
     return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
 
 
-def main:
+def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons):
+    if CYCLIAL_MODE == "True":
+        print('Enable cyclic mode')
+        while True:
+            if SEND_TO_CONSOLE == "False":
+                insert(persons)
+                print("Insert pack of record(-s)", file = sys.stdout)
+            else:
+                print("Output record(-s)", file = sys.stdout)
+                print(persons)
+    else:
+        if SEND_TO_CONSOLE == "False":
+            print(persons)
+            print("Insert single pack of record(-s)", file = sys.stdout)
+        else:
+            print(persons)
+
+
+def main():
     SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT = read_env()
     print('SEND_TO_CONSOLE:{} CYCLIAL_MODE:{} PERSON_COUNT{}'.format(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT))
-    generate_bulk(count)
-
+    persons = generate_bulk(PERSON_COUNT)
+    actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons)
 
 if __name__ == '__main__':
     main()

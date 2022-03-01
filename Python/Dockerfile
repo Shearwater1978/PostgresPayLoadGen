@@ -23,7 +23,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
     && apt update \
     && apt install net-tools \
-    && rm -rf /var/lib/apt/lists
+    && rm -rf /var/lib/apt/lists 
 
 USER notroot
 WORKDIR /app

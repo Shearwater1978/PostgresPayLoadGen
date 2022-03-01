@@ -56,8 +56,14 @@ def insert(persons):
         print('Unable to connect to db server. Exiting', file = sys.stdout)
         raise SystemExit(1)
     cursor = conn.cursor()
-    for person in load_json(persons):
-      cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
+    i = 0
+    person_counts = len(persons)
+    while i < person_counts:
+        person = persons[i]
+        cursor.execute("INSERT INTO person (uuid, fio, phone, age, addr, email) VALUES(%s, %s, %s, %s, %s, %s)", (person['uuid'], person['fio'], person['phone'], person['age'], person['address'], person['email']))
+        i += 1
+    # for person in load_json(persons):
+    #     cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
     conn.commit()
     cursor.close()
     conn.close()

@@ -15,12 +15,12 @@ Palyload script generate fake Person records with next fields:
 
 | Field name  | Value |
 | ------------- | ------------- |
+| uuid  | Unique uid for person  |
 | fio  | First name + Surename + Last name  |
 | phone  | Cellular number in the Russian format with code +7|
 | age  | Age generated between 18 and 20 year (can be changed directly in python script)  |
-| city  | City in Russia  |
 | addr  | Address of leaving the fake person  |
-| inn  | Russian tax number  |
+| email  | Email  |
 
 
 SQL script to create db person

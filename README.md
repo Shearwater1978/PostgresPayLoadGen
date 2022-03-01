@@ -34,3 +34,8 @@ CREATE TABLE person (
     inn INT
 );
 ```
+
+Run db PostgreSQL in docker container
+```
+docker run --name postgres -e POSTGRES_PASSWORD=pgpass -e POSTGRES_USER=pguser -e POSTGRES_DB=pgdb -d -p5432:5432 -v `pwd`/SQL/:/docker-entrypoint-initdb.d/ postgres
+```

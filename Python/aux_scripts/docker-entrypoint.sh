@@ -12,25 +12,29 @@ echo "DB_USER_PG_HOST: $DB_USER_PG_HOST"
 echo "DB_USER_PG_PORT: $DB_USER_PG_PORT"
 echo "SEND_TO_CONSOLE: $SEND_TO_CONSOLE"
 
-
-if [[ "$SEND_TO_CONSOLE" == 'False' ]]; then
+if [[ "$SEND_TO_CONSOLE" == "False" ]]; then
    echo "Initial check DB connection started..."
    RES=`python check_conn.py`
    echo "${RES}"
 fi
 
-if [[ "$SEND_TO_CONSOLE" == 'True' ]]; then
+if [[ "$SEND_TO_CONSOLE" == "True" ]]; then
    exec python new_persons_generator.py
 else
-   if [[ "$RES" != 'Connection to PG is active.' ]]; then
+   if [[ "$RES" != "Connection to PG is active." ]]; then
       echo "DB server is not available"
       echo "Termination..."
       exit 1
    else
-      while :
-      do
-         echo "Run send payload in cyclial mode..."
+      if [[ "$CYCLIAL_MODE" == "True" ]]; then
+         while :
+         do
+            echo "Run send payload in cyclial mode..."
+            python new_persons_generator.py
+         done
+      else
+         echo "Send payload at once time..."
          python new_persons_generator.py
-      done
+      fi
    fi
 fi

@@ -27,7 +27,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 USER notroot
 WORKDIR /app
-COPY aux_scripts/ /app/
+COPY ./aux_scripts/ /app/
 
 RUN pip install -r requirements.txt --no-warn-script-location
 

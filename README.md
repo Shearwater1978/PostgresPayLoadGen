@@ -23,15 +23,15 @@ Palyload script generate fake Person records with next fields:
 | inn  | Russian tax number  |
 
 
-DB Person
+SQL script to create db person
 ```
 CREATE TABLE person (
+    uuid VARCHAR ( 36 ) NOT NULL,
     fio VARCHAR ( 50 ) NOT NULL,
     phone VARCHAR ( 18 ) NOT NULL,
     age INT NOT NULL,
-    city VARCHAR ( 50 ) NOT NULL,
-    address VARCHAR ( 75 ) NOT NULL,
-    inn INT
+    addr VARCHAR ( 75 ) NOT NULL,
+    email VARCHAR ( 75 ) NOT NULL
 );
 ```
 

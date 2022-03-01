@@ -12,7 +12,7 @@ import json
 def generate_bulk(count):
     _ = Field(locale=Locale.RU)
     schema = Schema(schema=lambda: {
-        "uid": _("uuid"),
+        "uuid": _("uuid"),
         "fio": _("full_name", gender=Gender.FEMALE, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=Gender.FEMALE),
         "phone": _("person.telephone"),
         "age": _("person.age", minimum=18, maximum=65),

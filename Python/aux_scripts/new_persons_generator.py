@@ -6,6 +6,7 @@ from mimesis import Address
 import os
 import sys
 import psycopg2
+import json
 
 
 def generate_bulk(count):
@@ -43,7 +44,6 @@ def get_creds():
 
 def insert(persons):
     dbname, dbuser, dbpass, dbhost, dbport = get_creds()
-    # Connect to your postgres DB
     try:
         conn = psycopg2.connect(
             host=dbhost,
@@ -55,23 +55,12 @@ def insert(persons):
     except:
         print('Unable to connect to db server. Exiting', file = sys.stdout)
         raise SystemExit(1)
-    # conn.autocommit = True
     cursor = conn.cursor()
-    i = 0
-    persons_item_count = len(persons)
-    while i < persons_item_count:
-    # for person in load_json(persons):
-      # Open a cursor to perform database operations
-      # print("Read %s item from array. Sent to stdout" % i, file = sys.stdout)
-      person = json.loads(persons[i])
+    for person in load_json(persons):
       cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
-      # conn.commit()
-      i += 1
-    persons = {}
     conn.commit()
     cursor.close()
     conn.close()
-    gc.collect()
 
 
 def read_env():
@@ -119,6 +108,7 @@ def main():
     SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT = read_env()
     persons = generate_bulk(PERSON_COUNT)
     actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons)
+
 
 if __name__ == '__main__':
     main()

@@ -17,7 +17,7 @@ def get_creds():
             dbpass = os.getenv('DB_USER_PASS')
         dbuser = os.getenv('DB_USER_NAME')
     else:
-        print('Some env varibale is not set or undefined. Script aborted', file = sys.stdout)
+        print('Some env varibale is not set or undefined. Script aborted', file = sys.stderr)
         raise SystemExit(1)
     return(dbname, dbuser, dbpass, dbhost, dbport)
 
@@ -34,7 +34,7 @@ def check_conn():
             port=dbport
         )
     except:
-        print('Unable to connect to db server. Exiting', file = sys.stdout)
+        print('Unable to connect to db server. Exiting', file = sys.stderr)
         raise SystemExit(1)
     # Open a cursor to perform database operations
     cur = conn.cursor()
@@ -46,7 +46,7 @@ def check_conn():
     if records:
         print("Connection to PG is active.", file = sys.stdout)
     else:
-        print("Unable to established connection to PG. Script aborted", file = sys.stdout)
+        print("Unable to established connection to PG. Script aborted", file = sys.stderr)
         raise SystemExit(1)
 
 

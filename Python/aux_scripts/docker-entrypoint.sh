@@ -15,14 +15,14 @@ echo "SEND_TO_CONSOLE: $SEND_TO_CONSOLE"
 
 if [ "$SEND_TO_CONSOLE" == 'False' ]; then
    echo "Initial check DB connection started..."
-   RES=$(python check_conn.py)
-   echo "~~~~ $RES"
+   RES=`python check_conn.py`
+   echo "${RES}"
 fi
 
 if [ "$SEND_TO_CONSOLE" == 'True' ]; then
    exec python new_persons_generator.py
 else
-   if [ "$RES" !=  'Connection to PG is active.' ]; then
+   if [ "$RES" != 'Connection to PG is active.' ]; then
       echo "DB server is not available"
       echo "Termination..."
       exit 1

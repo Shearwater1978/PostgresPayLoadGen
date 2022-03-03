@@ -7,6 +7,7 @@ import os
 import sys
 import psycopg2
 import json
+from datetime import datetime
 
 
 def generate_bulk(count):
@@ -98,14 +99,17 @@ def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons):
         while True:
             if SEND_TO_CONSOLE == "False":
                 insert(persons)
-                print("Insert pack of record(-s)", file = sys.stdout)
+                dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+                print("%s -> Insert pack of record(-s)" % dt, file = sys.stdout)
             else:
-                print("Output record(-s)", file = sys.stdout)
+                dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+                print("%s -> Output record(-s)"% dt, file = sys.stdout)
                 print(persons)
     else:
         if SEND_TO_CONSOLE == "False":
             insert(persons)
-            print("Insert single pack of record(-s)", file = sys.stdout)
+            dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+            print("%s -> Insert single pack of record(-s)" % dt, file = sys.stdout)
         else:
             print(persons)
 

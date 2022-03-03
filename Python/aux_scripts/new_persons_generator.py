@@ -93,14 +93,25 @@ def read_env():
     return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
 
 
-def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons):
+def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT):
     if CYCLIAL_MODE == "True":
         print('Enable cyclic mode', file = sys.stdout)
         while True:
+            start_time = datetime.now()
+            persons = generate_bulk(PERSON_COUNT)
+            done_time = datetime.now()
+            duration = done_time - start_time
+            duration_in_s = duration.total_seconds()
+            dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+            print("%s -> Pack of %s record(-s) generated within %s seconds" % (dt, PERSON_COUNT, duration_in_s), file = sys.stdout)
             if SEND_TO_CONSOLE == "False":
+                start_time = datetime.now()
                 insert(persons)
+                done_time = datetime.now()
+                duration = done_time - start_time
+                duration_in_s = duration.total_seconds()
                 dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                print("%s -> Insert pack of record(-s)" % dt, file = sys.stdout)
+                print("%s -> Inserted pack of record(-s) within %s seconds" % (dt, duration_in_s), file = sys.stdout)
             else:
                 dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
                 print("%s -> Output record(-s)"% dt, file = sys.stdout)
@@ -116,8 +127,7 @@ def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons):
 
 def main():
     SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT = read_env()
-    persons = generate_bulk(PERSON_COUNT)
-    actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons)
+    actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
 
 
 if __name__ == '__main__':

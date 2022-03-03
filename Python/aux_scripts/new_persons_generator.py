@@ -76,7 +76,7 @@ def read_env():
         SEND_TO_CONSOLE = os.getenv('SEND_TO_CONSOLE')
     else:
         SEND_TO_CONSOLE = False
-    # Check for cyclial mode
+    # Check for cyclial mode enabled
     if os.getenv('CYCLIAL_MODE'):
         CYCLIAL_MODE = os.getenv('CYCLIAL_MODE')
     else:

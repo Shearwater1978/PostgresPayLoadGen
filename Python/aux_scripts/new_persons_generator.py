@@ -104,7 +104,7 @@ def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, persons):
                 print(persons)
     else:
         if SEND_TO_CONSOLE == "False":
-            print(persons)
+            insert(persons)
             print("Insert single pack of record(-s)", file = sys.stdout)
         else:
             print(persons)

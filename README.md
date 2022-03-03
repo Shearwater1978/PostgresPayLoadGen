@@ -44,3 +44,9 @@ Get records from PostgreSQL
 ```
 psql -U pguser -d person -h 0.0.0.0 < ./SQL/get_count_of_records.sql
 ```
+
+Or, if PostgreSQL running in docker container:
+### %postgres_container_name% - thereis name of running container with PostgreSQL
+```
+docker ps | grep %postgres_container_name% | awk '{ print $1 }' | xargs -I'{}' docker exec "{}" bash -c "psql -U pguser -d person < /opt/get_count_of_records.sql"
+```

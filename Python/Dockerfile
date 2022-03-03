@@ -26,9 +26,11 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && rm -rf /var/lib/apt/lists 
 
 USER notroot
+WORKDIR /opt/
+COPY /aux_scripts/requirements.txt .
+RUN pip install -r ./requirements.txt --no-warn-script-location
+
 WORKDIR /app
 COPY ./aux_scripts/ /app/
-
-RUN pip install -r requirements.txt --no-warn-script-location
 
 ENTRYPOINT ["/bin/bash", "docker-entrypoint.sh"]

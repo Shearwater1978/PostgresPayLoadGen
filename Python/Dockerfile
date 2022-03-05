@@ -28,6 +28,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 USER notroot
 WORKDIR /opt/
 COPY ./aux_scripts/requirements.txt .
+COPY ./sql/ .
 RUN pip install -r ./requirements.txt --no-warn-script-location
 
 WORKDIR /app

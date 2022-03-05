@@ -123,6 +123,8 @@ def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT):
             print("%s -> Insert single pack of record(-s)" % dt, file = sys.stdout)
         else:
             persons = generate_bulk(PERSON_COUNT)
+            dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+            print("%s -> Output record(-s)"% dt, file = sys.stdout)
             print(persons)
 
 

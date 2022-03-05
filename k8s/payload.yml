@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: payload-python
+spec:
+  containers:
+  - name: payload
+    image: docker.io/library/payload:latest
+    imagePullPolicy: Never
+    command: ["bash", "-c"]
+    args: ["/bin/sleep 600"]
+    env:
+    - name: CYCLIAL_MODE
+      value: "True"
+    - name: PERSON_COUNT
+      value: "10"
+    - name: DB_USER_NAME
+      value: "pguser"
+    - name: DB_USER_PASS
+      value: "pgpass"
+    - name: DB_USER_DB
+      value: "person"
+    - name: DB_USER_PG_HOST
+      value: "postgresql-hl"
+    - name: DB_USER_PG_PORT
+      value: "5432"
+    - name: SEND_TO_CONSOLE
+      value: "False"

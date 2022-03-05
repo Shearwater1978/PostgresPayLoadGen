@@ -1,6 +1,7 @@
 import psycopg2
 import os
 import sys
+from datetime import datetime
 
 
 def get_creds():
@@ -9,9 +10,9 @@ def get_creds():
             if os.getenv('DB_USER_DB'):
                 if os.getenv('DB_USER_PG_HOST'):
                     if os.getenv('DB_USER_PG_PORT'):
-                        dbport = os.getenv('DB_USER_PG_PORT')
+                        dbport = int(os.getenv('DB_USER_PG_PORT'))
                     else:
-                        dbport = "5432"
+                        dbport = 5432
                     dbhost = os.getenv('DB_USER_PG_HOST')
                 dbname = os.getenv('DB_USER_DB')
             dbpass = os.getenv('DB_USER_PASS')
@@ -31,10 +32,12 @@ def check_conn():
             database=dbname,
             user=dbuser,
             password=dbpass,
-            port=dbport
+            port=dbport,
+            connect_timeout=5
         )
-    except:
-        print('Unable to connect to db server. Exiting', file = sys.stderr)
+    except Exception as e:
+        dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        print("%s -> Unable to connect to db server: %s" % (dt, e), file = sys.stderr)
         raise SystemExit(1)
     # Open a cursor to perform database operations
     cur = conn.cursor()
@@ -46,7 +49,8 @@ def check_conn():
     if records:
         print("Connection to PG is active.", file = sys.stdout)
     else:
-        print("Unable to established connection to PG. Script aborted", file = sys.stderr)
+        dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        print("%s -> Unable to established connecttion to db server: %s" % (dt, e), file = sys.stderr)
         raise SystemExit(1)
 
 

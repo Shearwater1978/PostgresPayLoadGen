@@ -51,7 +51,8 @@ def insert(persons):
             database=dbname,
             user=dbuser,
             password=dbpass,
-            port=dbport
+            port=dbport,
+            connect_timeout=5
         )
     except:
         print('Unable to connect to db server. Exiting', file = sys.stdout)

@@ -4,6 +4,11 @@ import sys
 from datetime import datetime
 
 
+def curr_time():
+    dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    return(dt)
+
+
 def get_creds():
     if os.getenv('DB_USER_NAME'):
         if os.getenv('DB_USER_PASS'):
@@ -18,7 +23,7 @@ def get_creds():
             dbpass = os.getenv('DB_USER_PASS')
         dbuser = os.getenv('DB_USER_NAME')
     else:
-        print('Some env varibale is not set or undefined. Script aborted', file = sys.stderr)
+        print('%s -> Some env varibale is not set or undefined. Script aborted' % curr_time(), file = sys.stderr)
         raise SystemExit(1)
     return(dbname, dbuser, dbpass, dbhost, dbport)
 
@@ -36,8 +41,7 @@ def check_conn():
             connect_timeout=5
         )
     except Exception as e:
-        dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        print("%s -> Unable to connect to db server: %s" % (dt, e), file = sys.stderr)
+        print("%s -> Unable to connect to db server: %s" % (curr_time(), e), file = sys.stderr)
         raise SystemExit(1)
     # Open a cursor to perform database operations
     cur = conn.cursor()
@@ -47,10 +51,9 @@ def check_conn():
     # Retrieve query results
     records = cur.fetchall()
     if records:
-        print("Connection to PG is active.", file = sys.stdout)
+        print("%s -> Connection to PG is active." % curr_time(), file = sys.stdout)
     else:
-        dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        print("%s -> Unable to established connecttion to db server: %s" % (dt, e), file = sys.stderr)
+        print("%s -> Unable to established connecttion to db server: %s" % (curr_time(), e), file = sys.stderr)
         raise SystemExit(1)
 
 

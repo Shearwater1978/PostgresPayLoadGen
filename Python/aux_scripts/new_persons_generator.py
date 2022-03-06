@@ -10,6 +10,7 @@ import json
 from datetime import datetime
 import time
 import random
+from faker import Faker
 
 
 def curr_time():
@@ -17,17 +18,28 @@ def curr_time():
     return(dt)
 
 
-def generate_bulk(count):
-    _ = Field(locale=Locale.RU)
-    schema = Schema(schema=lambda: {
-        "uuid": _("uuid"),
-        "fio": _("full_name", gender=Gender.FEMALE, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=Gender.FEMALE),
-        "phone": _("person.telephone"),
-        "age": _("person.age", minimum=18, maximum=65),
-        "address": _("address.address"),
-        "email": _("person.email", domains=["test.com"], key=str.lower)
-    })
-    res = schema.create(iterations=count)
+def generate_bulk(count, generator):
+    if generator == 'memesis':
+        _ = Field(locale=Locale.RU)
+        schema = Schema(schema=lambda: {
+            "uuid": _("uuid"),
+            "fio": _("full_name", gender=Gender.FEMALE, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=Gender.FEMALE),
+            "phone": _("person.telephone"),
+            "age": _("person.age", minimum=18, maximum=65),
+            "address": _("address.address"),
+            "email": _("person.email", domains=["test.com"], key=str.lower)
+        })
+        res = schema.create(iterations=count)
+    else:
+        fake = Faker('ru_RU')
+        res = [{
+            "uuid": fake.uuid4(),
+            "fio": fake.name(),
+            "phone": fake.phone_number(),
+            "age": random.randint(18,118),
+            "address": fake.address(),
+            "IBAN": fake.iban(),
+            "email": fake.email()} for x in range(count)]
     return(res)
 
 
@@ -96,10 +108,14 @@ def read_env():
     else:
         print('%s -> PERSON_COUNT not found as env varibale. Used default value - 10' % curr_time(), file = sys.stdout)
         PERSON_COUNT = 10
-    return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
+    if os.getenv('NAME_OF_GENERATOR'):
+        NAME_OF_GENERATOR = os.getenv('NAME_OF_GENERATOR')
+    else:
+        NAME_OF_GENERATOR = 'memesis'
+    return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
 
 
-def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT):
+def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR): 
     if CYCLIAL_MODE == "True":
         if os.getenv('RANDOM_FACTOR'):
             RANDOM_FACTOR = 1
@@ -117,7 +133,7 @@ def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT):
             time.sleep(sleep_time)
             try:
                 print('%s -> Start of generate another bulk of records.' % curr_time(), file = sys.stdout)
-                persons = generate_bulk(PERSON_COUNT)
+                persons = generate_bulk(PERSON_COUNT, NAME_OF_GENERATOR)
                 print('%s -> End of generate another bulk of records.' % curr_time(), file = sys.stdout)
             except Exception as e:
                 print('%s -> Unable to retrieve another bulk of records. Error: %s' % (curr_time(), e), file = sys.stderr)
@@ -146,17 +162,18 @@ def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT):
             insert(persons)
             print('%s -> Insert single pack of record(-s)' % curr_time(), file = sys.stdout)
         else:
-            persons = generate_bulk(PERSON_COUNT)
+            persons = generate_bulk(PERSON_COUNT, NAME_OF_GENERATOR)
             print('%s -> Output record(-s)' % curr_time(), file = sys.stdout)
             print(persons)
 
 
 def main():
-    SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT = read_env()
+    SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR = read_env()
     print('%s -> Start work' % curr_time(), file = sys.stdout)
+    print('%s -> Selected generator: %s' % (curr_time(), NAME_OF_GENERATOR), file = sys.stderr)
     try:
         print('%s -> Run main function' % curr_time(), file = sys.stdout)
-        actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
+        actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
     except Exception as e:
         print('%s -> Unable to execute Actions. Error: %s' % (curr_time(), e), file = sys.stdout)
 

@@ -78,11 +78,12 @@ def insert(persons):
     cursor = conn.cursor()
     i = 0
     person_counts = len(persons)
+    conn.set_session(autocommit=True)
     while i < person_counts:
         person = persons[i]
         cursor.execute("INSERT INTO person (uuid, fio, phone, age, addr, email) VALUES(%s, %s, %s, %s, %s, %s)", (person['uuid'], person['fio'], person['phone'], person['age'], person['address'], person['email']))
         i += 1
-    conn.commit()
+    # conn.commit()
     cursor.close()
     conn.close()
 

@@ -25,7 +25,7 @@ def generate_bulk(count, generator):
             "uuid": _("uuid"),
             "fio": _("full_name", gender=Gender.FEMALE, reverse = True) + ' ' + RussiaSpecProvider().patronymic(gender=Gender.FEMALE),
             "phone": _("person.telephone"),
-            "age": _("person.age", minimum=18, maximum=65),
+            "age": _("person.age", minimum=18, maximum=118),
             "address": _("address.address"),
             "email": _("person.email", domains=["test.com"], key=str.lower)
         })
@@ -38,7 +38,6 @@ def generate_bulk(count, generator):
             "phone": fake.phone_number(),
             "age": random.randint(18,118),
             "address": fake.address(),
-            "IBAN": fake.iban(),
             "email": fake.email()} for x in range(count)]
     return(res)
 

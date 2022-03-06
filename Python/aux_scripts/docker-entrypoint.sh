@@ -25,7 +25,7 @@ fi
 if [[ "$SEND_TO_CONSOLE" == "True" ]]; then
    exec python new_persons_generator.py
 else
-   if [[ "$RES" != "Connection to PG is active." ]]; then
+   if [[ ! "$RES" =~ "Connection to PG is active" ]]; then
       echo "DB server is not available"
       echo "Termination..."
       exit 1

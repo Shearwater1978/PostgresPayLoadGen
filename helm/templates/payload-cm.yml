@@ -11,3 +11,5 @@ data:
   CYCLIAL_MODE: "True"
   PERSON_COUNT: "10"
   SEND_TO_CONSOLE: "False"
+  NAME_OF_GENERATOR: "fake"
+  RANDOM_FACTOR: "1"

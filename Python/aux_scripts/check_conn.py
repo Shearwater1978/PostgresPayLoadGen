@@ -51,7 +51,7 @@ def check_conn():
     # Retrieve query results
     records = cur.fetchall()
     if records:
-        print("%s -> Connection to PG is active." % curr_time(), file = sys.stdout)
+        print("%s -> Connection to PG is active" % curr_time(), file = sys.stdout)
     else:
         print("%s -> Unable to established connecttion to db server: %s" % (curr_time(), e), file = sys.stderr)
         raise SystemExit(1)

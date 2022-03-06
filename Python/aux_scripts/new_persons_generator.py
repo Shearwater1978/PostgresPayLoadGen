@@ -19,7 +19,7 @@ def curr_time():
 
 
 def generate_bulk(count, generator):
-    if generator == 'memesis':
+    if generator == 'mimesis':
         _ = Field(locale=Locale.RU)
         schema = Schema(schema=lambda: {
             "uuid": _("uuid"),
@@ -56,7 +56,7 @@ def get_creds():
             dbpass = os.getenv('DB_USER_PASS')
         dbuser = os.getenv('DB_USER_NAME')
     else:
-        print('%s -> Some env varibale is not set or undefined. Script aborted' % curr_time(), file = sys.stdout)
+        print('%s -> Some env varibale is not set or undefined. Script aborted' % curr_time(), file = sys.stderr)
         raise SystemExit(1)
     return(dbname, dbuser, dbpass, dbhost, dbport)
 
@@ -110,7 +110,7 @@ def read_env():
     if os.getenv('NAME_OF_GENERATOR'):
         NAME_OF_GENERATOR = os.getenv('NAME_OF_GENERATOR')
     else:
-        NAME_OF_GENERATOR = 'memesis'
+        NAME_OF_GENERATOR = 'mimesis'
     return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
 
 

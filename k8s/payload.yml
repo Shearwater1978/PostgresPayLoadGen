@@ -7,8 +7,6 @@ spec:
   - name: payload
     image: docker.io/library/payload:latest
     imagePullPolicy: Never
-    command: ["bash", "-c"]
-    args: ["/bin/sleep 600"]
     env:
     - name: CYCLIAL_MODE
       value: "True"

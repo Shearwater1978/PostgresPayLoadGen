@@ -8,6 +8,13 @@ import sys
 import psycopg2
 import json
 from datetime import datetime
+import time
+import random
+
+
+def curr_time():
+    dt = datetime.now().strftime("%H:%M:%S.%f")[:-4]
+    return(dt)
 
 
 def generate_bulk(count):
@@ -38,7 +45,7 @@ def get_creds():
             dbpass = os.getenv('DB_USER_PASS')
         dbuser = os.getenv('DB_USER_NAME')
     else:
-        print('Some env varibale is not set or undefined. Script aborted', file = sys.stdout)
+        print('%s -> Some env varibale is not set or undefined. Script aborted' % curr_time(), file = sys.stdout)
         raise SystemExit(1)
     return(dbname, dbuser, dbpass, dbhost, dbport)
 
@@ -55,7 +62,7 @@ def insert(persons):
             connect_timeout=5
         )
     except:
-        print('Unable to connect to db server. Exiting', file = sys.stdout)
+        print('%s -> Unable to connect to db server. Exiting' % curr_time(), file = sys.stdout)
         raise SystemExit(1)
     cursor = conn.cursor()
     i = 0
@@ -64,8 +71,6 @@ def insert(persons):
         person = persons[i]
         cursor.execute("INSERT INTO person (uuid, fio, phone, age, addr, email) VALUES(%s, %s, %s, %s, %s, %s)", (person['uuid'], person['fio'], person['phone'], person['age'], person['address'], person['email']))
         i += 1
-    # for person in load_json(persons):
-    #     cursor.execute("INSERT INTO person (fio, phone, age, city, addr, inn) VALUES(%s, %s, %s, %s, %s, %s)", (person['fio'], person['phone'], person['age'], person['city'], person['address'], person['inn']))
     conn.commit()
     cursor.close()
     conn.close()
@@ -86,52 +91,74 @@ def read_env():
         try:
             PERSON_COUNT = int(os.getenv('PERSON_COUNT'))
         except:
-            print('PERSON_COUNT is set but value is not number. Used default value - 10', file = sys.stdout)
+            print('%s -> PERSON_COUNT is set but value is not number. Used default value - 10' % curr_time(), file = sys.stdout)
             PERSON_COUNT = 10
     else:
-        print('PERSON_COUNT not found as env varibale. Used default value - 10', file = sys.stdout)
+        print('%s -> PERSON_COUNT not found as env varibale. Used default value - 10' % curr_time(), file = sys.stdout)
         PERSON_COUNT = 10
     return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
 
 
 def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT):
     if CYCLIAL_MODE == "True":
-        print('Enable cyclic mode', file = sys.stdout)
+        if os.getenv('RANDOM_FACTOR'):
+            RANDOM_FACTOR = 1
+        else:
+            RANDOM_FACTOR = 0            
+        print('%s -> Enable cyclic mode' % curr_time(), file = sys.stdout)
         while True:
             start_time = datetime.now()
-            persons = generate_bulk(PERSON_COUNT)
+            # Implemented pause between two inserts to db
+            if RANDOM_FACTOR == 1:
+                sleep_time = round(random.randint(1,500)/100, 3)
+            else:
+                sleep_time = 0
+            print('%s -> Goes to sleep for %s sec' % (curr_time(), sleep_time), file = sys.stdout)
+            time.sleep(sleep_time)
+            try:
+                print('%s -> Start of generate another bulk of records.' % curr_time(), file = sys.stdout)
+                persons = generate_bulk(PERSON_COUNT)
+                print('%s -> End of generate another bulk of records.' % curr_time(), file = sys.stdout)
+            except Exception as e:
+                print('%s -> Unable to retrieve another bulk of records. Error: %s' % (curr_time(), e), file = sys.stderr)
             done_time = datetime.now()
             duration = done_time - start_time
             duration_in_s = duration.total_seconds()
-            dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-            print("%s -> Pack of %s record(-s) generated within %s seconds" % (dt, PERSON_COUNT, duration_in_s), file = sys.stdout)
+            print('%s -> Pack of %s record(-s) generated within %s seconds' % (curr_time(), PERSON_COUNT, duration_in_s), file = sys.stdout)
             if SEND_TO_CONSOLE == "False":
                 start_time = datetime.now()
-                insert(persons)
+                try:
+                    print('%s -> Try to insert records into db' % (curr_time()), file = sys.stdout)
+                    insert(persons)
+                    print('%s -> Records are inserted' % curr_time(), file = sys.stdout)
+                    persons = {}
+                except Exception as e:
+                    print('%s -> Unable to insert another bulk of records. Error: %s' % (curr_time(), e), file = sys.stderr)
                 done_time = datetime.now()
                 duration = done_time - start_time
                 duration_in_s = duration.total_seconds()
-                dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                print("%s -> Inserted pack of record(-s) within %s seconds" % (dt, duration_in_s), file = sys.stdout)
+                print('%s -> Inserted pack of record(-s) within %s seconds' % (curr_time(), duration_in_s), file = sys.stdout)
             else:
-                dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                print("%s -> Output record(-s)"% dt, file = sys.stdout)
+                print('%s -> Output record(-s)' % curr_time(), file = sys.stdout)
                 print(persons)
     else:
         if SEND_TO_CONSOLE == "False":
             insert(persons)
-            dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-            print("%s -> Insert single pack of record(-s)" % dt, file = sys.stdout)
+            print('%s -> Insert single pack of record(-s)' % curr_time(), file = sys.stdout)
         else:
             persons = generate_bulk(PERSON_COUNT)
-            dt = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-            print("%s -> Output record(-s)"% dt, file = sys.stdout)
+            print('%s -> Output record(-s)' % curr_time(), file = sys.stdout)
             print(persons)
 
 
 def main():
     SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT = read_env()
-    actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
+    print('%s -> Start work' % curr_time(), file = sys.stdout)
+    try:
+        print('%s -> Run main function' % curr_time(), file = sys.stdout)
+        actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT)
+    except Exception as e:
+        print('%s -> Unable to execute Actions. Error: %s' % (curr_time(), e), file = sys.stdout)
 
 
 if __name__ == '__main__':

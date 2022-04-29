@@ -36,7 +36,7 @@ def generate_bulk(count, generator):
             "uuid": fake.uuid4(),
             "fio": fake.name(),
             "phone": fake.phone_number(),
-            "age": random.randint(18,118),
+            "age": random.randint(18, 118),
             "address": fake.address(),
             "email": fake.email()} for x in range(count)]
     return(res)
@@ -115,18 +115,18 @@ def read_env():
     return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
 
 
-def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR): 
+def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR):
     if CYCLIAL_MODE == "True":
         if os.getenv('RANDOM_FACTOR'):
             RANDOM_FACTOR = 1
         else:
-            RANDOM_FACTOR = 0            
+            RANDOM_FACTOR = 0
         print('%s -> Enable cyclic mode' % curr_time(), file = sys.stdout)
         while True:
             start_time = datetime.now()
             # Implemented pause between two inserts to db
             if RANDOM_FACTOR == 1:
-                sleep_time = round(random.randint(1,500)/100, 3)
+                sleep_time = round(random.randint(1, 500) / 100, 3)
             else:
                 sleep_time = 0
             print('%s -> Goes to sleep for %s sec' % (curr_time(), sleep_time), file = sys.stdout)

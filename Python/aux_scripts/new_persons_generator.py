@@ -11,6 +11,8 @@ from datetime import datetime
 import time
 import random
 from faker import Faker
+import csv
+from multiprocessing import Pool
 
 
 def curr_time():
@@ -88,12 +90,38 @@ def insert(persons):
     conn.close()
 
 
+def save_data_to_csv(*args):
+    #headers = ['uuid', 'fio', 'phone', 'age', 'address', 'email']
+    headers = args[0]
+    records = args[1]
+    data = []
+    for item in range(0, len(records)):
+        uuid = records[item]['uuid']
+        fio = records[item]['fio']
+        phone = records[item]['phone']
+        age = records[item]['age']
+        address = records[item]['address']
+        email = records[item]['email']
+        data.append(['%s' % uuid, '%s' % fio, '%s' % phone, '%s' % age, '%s' % address, '%s' % email])
+    with open('/tmp/persons.csv', 'w', encoding='UTF8') as f:
+        writer = csv.writer(f)
+        # write the headers
+        writer.writerow(headers)
+        # write the data
+        writer.writerows(data)
+    f.close()
+
+
 def read_env():
-    # Check for output to console
-    if os.getenv('SEND_TO_CONSOLE'):
-        SEND_TO_CONSOLE = os.getenv('SEND_TO_CONSOLE')
-    else:
+    if os.getenv('SAVE_TO_CSV'):
+        SAVE_TO_CSV = os.getenv('SAVE_TO_CSV')
         SEND_TO_CONSOLE = False
+    else:
+        # Check for output to console
+        SEND_TO_CONSOLE = True
+        SAVE_TO_CSV = False
+    print('%s -> SAVE_TO_CSV: %s' % (curr_time(), os.getenv('SAVE_TO_CSV')), file = sys.stdout)
+    print('%s -> SEND_TO_CONSOLE: %s' % (curr_time(), SEND_TO_CONSOLE), file = sys.stdout)
     # Check for cyclial mode enabled
     if os.getenv('CYCLIAL_MODE'):
         CYCLIAL_MODE = os.getenv('CYCLIAL_MODE')
@@ -112,15 +140,15 @@ def read_env():
         NAME_OF_GENERATOR = os.getenv('NAME_OF_GENERATOR')
     else:
         NAME_OF_GENERATOR = 'mimesis'
-    return(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
+    return(SAVE_TO_CSV, SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
 
 
-def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR): 
+def actions(SAVE_TO_CSV, SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR): 
     if CYCLIAL_MODE == "True":
         if os.getenv('RANDOM_FACTOR'):
             RANDOM_FACTOR = 1
         else:
-            RANDOM_FACTOR = 0            
+            RANDOM_FACTOR = 0
         print('%s -> Enable cyclic mode' % curr_time(), file = sys.stdout)
         while True:
             start_time = datetime.now()
@@ -141,39 +169,51 @@ def actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR):
             duration = done_time - start_time
             duration_in_s = duration.total_seconds()
             print('%s -> Pack of %s record(-s) generated within %s seconds' % (curr_time(), PERSON_COUNT, duration_in_s), file = sys.stdout)
-            if SEND_TO_CONSOLE == "False":
-                start_time = datetime.now()
-                try:
-                    print('%s -> Try to insert records into db' % (curr_time()), file = sys.stdout)
-                    insert(persons)
-                    print('%s -> Records are inserted' % curr_time(), file = sys.stdout)
-                    persons = {}
-                except Exception as e:
-                    print('%s -> Unable to insert another bulk of records. Error: %s' % (curr_time(), e), file = sys.stderr)
-                done_time = datetime.now()
-                duration = done_time - start_time
-                duration_in_s = duration.total_seconds()
-                print('%s -> Inserted pack of record(-s) within %s seconds' % (curr_time(), duration_in_s), file = sys.stdout)
+            ## Add support to CSV
+            print('%s -> SEND_TO_CONSOLE: %s' % (curr_time(), SEND_TO_CONSOLE), file = sys.stdout)
+            if SEND_TO_CONSOLE == False:
+                print('%s -> Call conditions IF for save' % curr_time(), file = sys.stdout)
+                if SAVE_TO_CSV == False:
+                    start_time = datetime.now()
+                    try:
+                        print('%s -> Try to insert records into db' % (curr_time()), file = sys.stdout)
+                        insert(persons)
+                        print('%s -> Records are inserted' % curr_time(), file = sys.stdout)
+                        persons = {}
+                    except Exception as e:
+                        print('%s -> Unable to insert another bulk of records. Error: %s' % (curr_time(), e), file = sys.stderr)
+                    done_time = datetime.now()
+                    duration = done_time - start_time
+                    duration_in_s = duration.total_seconds()
+                    print('%s -> Inserted pack of record(-s) within %s seconds' % (curr_time(), duration_in_s), file = sys.stdout)
+                else:
+                    print('%s -> Output record(-s) saved to file' % curr_time(), file = sys.stdout)
             else:
                 print('%s -> Output record(-s)' % curr_time(), file = sys.stdout)
                 print(persons)
     else:
-        if SEND_TO_CONSOLE == "False":
-            insert(persons)
-            print('%s -> Insert single pack of record(-s)' % curr_time(), file = sys.stdout)
+        print('%s -> Insert single pack of record(-s) or writing to file' % curr_time(), file = sys.stdout)
+        if SEND_TO_CONSOLE == False:
+            persons = generate_bulk(PERSON_COUNT, NAME_OF_GENERATOR)
+            if not SAVE_TO_CSV:
+                insert(persons)
+                print('%s -> Insert single pack of record(-s)' % curr_time(), file = sys.stdout)
+            else:
+                headers = ['uuid', 'fio', 'phone', 'age', 'address', 'email']
+                save_data_to_csv(headers, persons)
+                print('%s -> Output record(-s) saved to file' % curr_time(), file = sys.stdout)
         else:
             persons = generate_bulk(PERSON_COUNT, NAME_OF_GENERATOR)
-            print('%s -> Output record(-s)' % curr_time(), file = sys.stdout)
             print(persons)
 
 
 def main():
-    SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR = read_env()
+    SAVE_TO_CSV, SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR = read_env()
     print('%s -> Start work' % curr_time(), file = sys.stdout)
     print('%s -> Selected generator: %s' % (curr_time(), NAME_OF_GENERATOR), file = sys.stderr)
     try:
         print('%s -> Run main function' % curr_time(), file = sys.stdout)
-        actions(SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
+        actions(SAVE_TO_CSV, SEND_TO_CONSOLE, CYCLIAL_MODE, PERSON_COUNT, NAME_OF_GENERATOR)
     except Exception as e:
         print('%s -> Unable to execute Actions. Error: %s' % (curr_time(), e), file = sys.stdout)
 

@@ -3,8 +3,9 @@
 set -e
 
 if [[ "$DEBUG_ON" == "Yes" ]]; then
-   echo "Check env variables"
+   echo "Check env variables set up via export="
    echo "CYCLIAL_MODE: $CYCLIAL_MODE"
+   echo "SAVE_TO_CSV: $SAVE_TO_CSV" 
    echo "PERSON_COUNT: $PERSON_COUNT"
    echo "DB_USER_NAME: $DB_USER_NAME"
    echo "DB_USER_PASS: $DB_USER_PASS"

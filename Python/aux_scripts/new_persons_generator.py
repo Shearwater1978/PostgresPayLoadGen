@@ -12,7 +12,6 @@ import time
 import random
 from faker import Faker
 import csv
-from multiprocessing import Pool
 
 
 def curr_time():
